@@ -19,3 +19,7 @@ Answers
 - 그리디, 허프만
 - 스트링 매치
 - 집합, 비트벡터
+
+
+## cf. git markdown syntax
+https://guides.github.com/features/mastering-markdown/
