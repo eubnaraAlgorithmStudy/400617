@@ -6,3 +6,12 @@ git commit -m message
 git pull
 git push
 
+- 레드블랙
+- B, +트리
+- 소팅 & 분할정복 
+- 해싱
+- AVL
+- 동적프로그래밍
+- 그리디, 허프만
+- 스트링 매치
+- 집합, 비트벡터
