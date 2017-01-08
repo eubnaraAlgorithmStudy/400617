@@ -2,6 +2,7 @@
 Answers
 
 git add	filepath 
+(git add --all)
 git commit -m message
 git pull
 git push
