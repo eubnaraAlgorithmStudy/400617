@@ -1,11 +1,12 @@
 # 400617
 Answers
 
-git add	filepath 
-(git add --all)
-git commit -m message
-git pull
-git push
+## instructions
+* git add	filepath 
+* (git add --all)
+* git commit -m message
+* git pull
+* git push
 
 - 레드블랙
 - B, +트리
