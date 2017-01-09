@@ -21,7 +21,6 @@ string givenStr[119] = {
 };
 
 vector<vector<string> > S;
-bool gResult = false;
 
 // 주어진 화학기호에 대해 초기화
 void initialize() {
@@ -34,7 +33,7 @@ void initialize() {
 }
 
 // string 처음부터 nst가 까지의 문자열이 화학기호에 포함되는지 확인
-bool inCharIn(string str, int nst) {
+bool isCharIn(string str, int nst) {
     bool isIn = false;
     int inIndex = str[0]-'a'; // 첫 문자로 해당 위치의 배열을 찾는다
     vector<string> vS = S[inIndex];
@@ -52,36 +51,20 @@ bool inCharIn(string str, int nst) {
 }
 
 // 완전 탐색
-void process(string str) {
+bool process(string str) {
     int nLen = str.length();
     if (nLen == 0)
-    {
-        gResult = true;
-        return ;
+        return true;
+    
+    if (isCharIn(str, 1)) {
+        return process(str.substr(1, nLen-1));
     }
     
-    if (nLen >= 2) {
-        if (inCharIn(str, 2)) {
-            if (gResult)
-                return;
-            
-            process(str.substr(2, nLen-2));
-        }
-        
-        if (inCharIn(str, 1)) {
-            if (gResult)
-                return;
-            
-            process(str.substr(1, nLen-1));
-        }
-    } else {
-        if (inCharIn(str, 1)) {
-            if (gResult)
-                return;
-            
-            process(str.substr(1, nLen-1));
-        }
+    if (nLen >= 2 && isCharIn(str, 2)) {
+        return process(str.substr(2, nLen-2));
     }
+    
+    return false;
 }
 
 int main(int argc, char** argv) {
@@ -99,14 +82,12 @@ int main(int argc, char** argv) {
         // 이 부분에서 알고리즘 프로그램을 작성하십시오.
         
         string T_STR;
-        
         cin >> T_STR;
-        gResult = false;
-        process(T_STR);
+        bool ans = process(T_STR);
         
         // 이 부분에서 정답을 출력하십시오.
         printf("Case #%d\n", test_case);	// cout 사용 가능
-        if (gResult) {
+        if (ans) {
             printf("YES\n");
         } else {
             printf("NO\n");
