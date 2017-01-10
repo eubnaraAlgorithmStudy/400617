@@ -236,4 +236,5 @@ bool canMakeSentence(char* s, int len) {
 	}
 	delete []isVisited;
 	return ret;
+
 }
