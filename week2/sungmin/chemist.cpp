@@ -3,11 +3,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 
 using namespace std;
 
 
-string givenStr[119] = {
+string givenStr[114] = {
     "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al",
     "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe",
     "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr",
@@ -21,10 +22,11 @@ string givenStr[119] = {
 };
 
 vector<vector<string> > S;
+vector<vector<int> > dp;
 
 // 주어진 화학기호에 대해 초기화
 void initialize() {
-    int nLen = 119;//givenStr.size();
+    int nLen = 114;//givenStr.size();
     for (int i=0; i<nLen; i++) {
         givenStr[i][0] += 32;
         int inIndex = givenStr[i][0] - 'a';
@@ -34,7 +36,6 @@ void initialize() {
 
 // string 처음부터 nst가 까지의 문자열이 화학기호에 포함되는지 확인
 bool isCharIn(string str, int nst) {
-    bool isIn = false;
     int inIndex = str[0]-'a'; // 첫 문자로 해당 위치의 배열을 찾는다
     vector<string> vS = S[inIndex];
     int nLen = vS.size();
@@ -42,29 +43,47 @@ bool isCharIn(string str, int nst) {
     
     for (int i=0; i<nLen; i++) {
         if (comStr.compare(vS[i]) == 0) {
-            isIn = true;
-            break;
+            return true;
         }
     }
     
-    return isIn;
+    return false;
 }
 
-// 완전 탐색
-bool process(string str) {
-    int nLen = str.length();
-    if (nLen == 0)
-        return true;
+// 완전 탐색, tLen: 전체 글자 크기
+int process(string str, const int &tLen) {
+    queue<int> Q;
     
-    if (isCharIn(str, 1)) {
-        return process(str.substr(1, nLen-1));
+    if (tLen != 0)
+        Q.push(0);
+    
+    while (!Q.empty()) {
+        int inValue = Q.front();
+        
+        if (tLen == inValue)
+            return 1;
+        
+        if (isCharIn(str.substr(inValue), 1)) {
+            if (dp[inValue][0] != -1) {
+                Q.pop();
+                continue;
+            }
+            dp[inValue][0] = 0;
+            Q.push(inValue+1);
+        }
+        
+        if ((tLen - inValue) >= 2 && isCharIn(str.substr(inValue), 2)) {
+            if (dp[inValue][1] != -1) {
+                Q.pop();
+                continue;
+            }
+            dp[inValue][1] = 0;
+            Q.push(inValue+2);
+        }
+        
+        Q.pop();
     }
-    
-    if (nLen >= 2 && isCharIn(str, 2)) {
-        return process(str.substr(2, nLen-2));
-    }
-    
-    return false;
+    return 0;
 }
 
 int main(int argc, char** argv) {
@@ -83,11 +102,14 @@ int main(int argc, char** argv) {
         
         string T_STR;
         cin >> T_STR;
-        bool ans = process(T_STR);
+        int sLen = T_STR.length();
+        dp.clear();
+        dp.assign(sLen, vector<int>(2, -1));
+        int ans = process(T_STR, sLen);
         
         // 이 부분에서 정답을 출력하십시오.
         printf("Case #%d\n", test_case);	// cout 사용 가능
-        if (ans) {
+        if (ans==1) {
             printf("YES\n");
         } else {
             printf("NO\n");
