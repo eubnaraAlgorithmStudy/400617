@@ -1,11 +1,14 @@
 # 400617
 Answers
 
-git add	filepath 
-(git add --all)
-git commit -m message
-git pull
-git push
+## instructions
+* git add	filepath 
+* (git add --all)
+* git commit -m message
+* git pull
+* git push
+
+## subjects
 
 - 레드블랙
 - B, +트리
@@ -16,3 +19,7 @@ git push
 - 그리디, 허프만
 - 스트링 매치
 - 집합, 비트벡터
+
+
+## cf. git markdown syntax
+https://guides.github.com/features/mastering-markdown/
