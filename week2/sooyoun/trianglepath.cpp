@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 using namespace std;
 
 int max(int a, int b);
@@ -29,11 +30,11 @@ int main() {
 	scanf("%d", &TC);	// cin 사용 가능
 	for (test_case = 1; test_case <= TC; test_case++) {
 		// 이 부분에서 알고리즘 프로그램을 작성하십시오.
-		//int n;
-		//scanf("%d", &n);
-		int triangle[5][5];
-		int total[5][5];
-		for (int i = 0;i < 5;i++)
+		int n;
+		scanf("%d", &n);
+		int triangle[100][100];
+		int total[100][100];
+		for (int i = 0;i < n;i++)
 		{
 			for (int j =0;j <= i;j++)
 			{
@@ -42,7 +43,7 @@ int main() {
 		}
 
 		total[0][0] = triangle[0][0];
-		for (int i = 1;i < 5;i++)
+		for (int i = 1;i < n;i++)
 		{
 			for (int j = 0;j <= i;j++)
 			{
@@ -54,7 +55,7 @@ int main() {
 					total[i][j] = triangle[i][j] + max(total[i - 1][j - 1], total[i - 1][j]);
 			}
 		}
-		for (int i = 0;i < 5;i++)
+		for (int i = 0;i < n;i++)
 		{
 			maxresult = max(maxresult, total[4][i]);
 		}
