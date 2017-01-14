@@ -26,10 +26,10 @@ int max(int a, int b)
 int main() {
 	int TC;
 	int test_case;
-	int maxresult = 0;
 	scanf("%d", &TC);	// cin 사용 가능
 	for (test_case = 1; test_case <= TC; test_case++) {
 		// 이 부분에서 알고리즘 프로그램을 작성하십시오.
+		int maxresult = 0;//실수했던 곳 테스트 케이스가 여러개니까 그때마다 maxresult를 초기화 해줘야한다!!!!!!!!!!!!!1 중요해요!!!!!!!!!!!!!
 		int n;
 		scanf("%d", &n);
 		int triangle[100][100];
@@ -57,7 +57,7 @@ int main() {
 		}
 		for (int i = 0;i < n;i++)
 		{
-			maxresult = max(maxresult, total[4][i]);
+			maxresult = max(maxresult, total[n-1][i]);
 		}
 		
 		printf("%d", maxresult);
