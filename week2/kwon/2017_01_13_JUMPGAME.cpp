@@ -39,20 +39,22 @@ int main(void)
 {
 	int T = 0;
 	scanf("%d", &T);
-	
-	// NAK 초기화
-	for (int i = 0; i < MAX; i++)
-	{
-		for (int j = 0; j < MAX; j++)
-		{
-			NAK[i][j] = 0; 
-		}
-	}
+
 	while (T--)
 	{
 		// n을 받고
 		scanf("%d", &n);
 		ret = 0;
+
+		// NAK 초기화
+		for (int i = 0; i < MAX; i++)
+		{
+			for (int j = 0; j < MAX; j++)
+			{
+				NAK[i][j] = 0;
+			}
+		}
+
 		// 이차원 배열 만들기
 		arr = (int**)malloc(sizeof(int *) * n);
 		for (int i = 0; i < n; i++)
