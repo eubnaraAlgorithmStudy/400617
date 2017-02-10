@@ -39,13 +39,13 @@ int main(void)
 		MIN = 100;
 		scanf("%d %d", &N, &L);
 		arr = new double[N];
-		for (int i = 0; i < N; i++)
+		for (register int i = 0; i < N; i++)
 		{
 			scanf("%lf", &arr[i]);
 		}
-		for (int i = L; i <= N; i++)
+		for (register int i = L; i <= N; i++)
 		{
- 			CAL(i);
+ 			CAL(i);  
 		}
 		printf("%.12lf\n", MIN);
 	}

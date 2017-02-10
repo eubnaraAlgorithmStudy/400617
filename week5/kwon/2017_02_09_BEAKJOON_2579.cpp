@@ -19,10 +19,9 @@ void dynamic(void)
 		else if (i == 2) 
 			temp[i] = max(stair[i - 1] + stair[i], temp[i - 2] + stair[i]);
 		else 
-			temp[i] = max(temp[i - 3] + stair[i - 1] + stair[i], temp[i - 2] + stair[i]);
+			temp[i] = max(temp[i - 3] + stair[i - 1] + stair[i], temp[i - 2] + stair[i]); // 더해지는 패턴  
 	}
 }
-
 int main(void) 
 {
 	scanf("%d", &T);

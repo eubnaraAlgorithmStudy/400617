@@ -32,7 +32,7 @@ int main(void)
 
 	free(string);
 	free(str);
-
+    
 	return 0;
 }
 // Function definition
