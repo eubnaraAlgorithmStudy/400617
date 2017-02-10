@@ -31,9 +31,6 @@ int main(void)
 	{
 		printf("%s\n", *(uri_save + i));
 	}
-
-
-
 	free(uri);
 	free(uri_result);
 	free(uri_save);
