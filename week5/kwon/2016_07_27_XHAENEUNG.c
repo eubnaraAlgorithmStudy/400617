@@ -544,7 +544,6 @@ void CONVERT(char * A, char * B, char * C, char * OP, int * arr)
 	default:
 		break;
 	}
-
 }
 void SPLIT(char * input, char * A, char * B, char * C, char * OP)
 {
