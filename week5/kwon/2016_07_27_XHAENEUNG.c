@@ -606,7 +606,7 @@ void XHAENEUNG(char ** expressions, char * input, int key)
 		*(expressions + key) = "YES";
 	else
 		*(expressions + key) = "NO";
-
+       
 	free(A);
 	free(B);
 	free(C);
