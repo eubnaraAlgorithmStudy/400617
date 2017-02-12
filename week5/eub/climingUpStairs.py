@@ -22,43 +22,51 @@ climbUp
 
     현재 위치로는 1칸 전 혹은 2칸 전에서 올 수 있다.
     
+    nested list,
+    [idx][연속유무]
+    연속유무:
+        0: 불연속
+        1: 연속
 '''
 
 def climbUp(inputList):
     # 연속된 3개의 계단을 방지위한 변수
-    continuousStairs = 0
     result = []
     totalStairs = len(inputList)
     # basecase
     if totalStairs <= 2:
-        return inputList[0] if totalStairs == 1 else inputList[0] if inputList[0] >= inputList[1] else (inputList[0] + inputList[1])
+        return inputList[0] if totalStairs == 1 else (inputList[0] + inputList[1])
 
-    result.append(inputList[0])
-    result.append(inputList[0] + inputList[1])
+    # 불연속 / 연속 순으로 집어넣는다.
+    # 2칸 전에서 왔을 때, 1칸 전에서 왔을 때
+    # 2칸 전에서 올 때는 2칸 전의 불연속/연속인 경우에서 모두 올 수 있지만, 여기는 basecase이므로 0을 넣어둔다.
+    result.append([])
+    # can't jump from -2, 2칸 전에서 오는 불연속인 경우
+    result[0].append(0 + inputList[0])
+    # can't jump from -1, 1칸 전에서 와서 연속인 경우
+    result[0].append(0 + inputList[0])
+    
 
-    # result[2] == (inputList[0] + inputList[2], continuousStairs = 1)  or (inputList[1] + inputList[2], continuousStairs = 2)
-    if inputList[0] > inputList[1] :
-        result.append(inputList[0] + inputList[2])
-        continuousStairs = 1
-    else:
-        result.append(inputList[1] + inputList[2])
-        continuousStairs = 2
+    result.append([])
+    result[1].append(0 + inputList[1])
+    result[1].append(inputList[0] + inputList[1])
+
+
+    result.append([])
+    result[2].append( (result[0][0] if result[0][0] > result[0][1] else result[0][1] ) + inputList[2])
+    result[2].append( result[1][0] + inputList[2] )
 
 
     #
     for i in range(3, totalStairs):
-        if continuousStairs == 2:
-            result.append(inputList[i] + result[i-2])
-            continuousStairs = 1
-        else:
-            if result[i-1] < result[i-2]: 
-                continuousStairs = continuousStairs + 1
-            else:
-                continuousStairs = 1
-            result.append( inputList[i] + (result[i-1] if result[i-1] >= result[i-2] else result[i-2]) )
+        result.append([])
+        # 불연속
+        result[i].append( (result[i-2][0] if result[i-2][0] > result[i-2][1] else result[i-2][1] ) + inputList[i])
 
-    return result[totalStairs - 1]
-
+        # 연속
+        result[i].append( result[i-1][0] + inputList[i] )
+    lastIdx = totalStairs - 1
+    return result[lastIdx][0] if result[lastIdx][0] > result[lastIdx][1] else result[lastIdx][1]
 
 totalStairs = input()
 inputList = []
