@@ -13,7 +13,7 @@ void Cal()
 	result[0][0] = input[0][0];
 	for (register int i = 1; i < M; i++)
 	{
-		result[0][i] = input[0][i - 1] + input[0][i];
+		result[0][i] = result[0][i - 1] + input[0][i];
 	}
 	// result row 0 , 맨 윗줄은 길이 -- 이렇게 하나이므로 그냥 구해준다.
 	
