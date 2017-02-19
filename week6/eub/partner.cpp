@@ -3,6 +3,9 @@
 #include <cstring>
 #include <cmath>
 
+const int CHANG_GYU = 0;
+const int UI_JONG = 1;
+const double NOT_THINK_YET = -1.0;
 
 double m, d;
 char suggest[100+5];
@@ -19,7 +22,7 @@ double maxProfitForC () {
 
 
     // 각각이 현재까지 최소한 보장받고 싶은 금액
-    double c_min = -1.0, u_min = -1.0;
+    double min[2] = { NOT_THINK_YET, NOT_THINK_YET };
     double invert_d = 1 - d * 0.01;
 
     int i = strlen(suggest) - 1; // 마지막 위치
@@ -33,30 +36,32 @@ double maxProfitForC () {
         }
         switch(curChar) {
             case 'C':
-                if(u_min == -1.0) {
-                    c_min = m * pow(invert_d, i);
-                } else {
-                    c_min = m * pow(invert_d, i);
-                    c_min -= u_min;
+                min[CHANG_GYU] = m * pow(invert_d, i);
+
+                if(min[UI_JONG] != NOT_THINK_YET) {
+                    
+                   min[CHANG_GYU] -= min[UI_JONG];
+
                 }
                 break;
 
             case 'U':
-                if(c_min == -1.0) {
-                    u_min = m * pow(invert_d, i);
-                } else {
-                    u_min = m * pow(invert_d, i);
-                    u_min -= c_min;
+                min[UI_JONG] = m * pow(invert_d, i);
+
+                if(min[CHANG_GYU] != NOT_THINK_YET) {
+
+                    min[UI_JONG] -= min[CHANG_GYU];
+
                 }
                 break;
+
             default:
                 printf("str input error\n");
                 exit(-1);
         }
         i--; 
     }
-
-    return (c_min == -1.0) ? 0.0 : c_min;
+    return (min[CHANG_GYU] == NOT_THINK_YET) ? 0.0 : min[CHANG_GYU];
 }
 
 
