@@ -65,8 +65,11 @@ def climbUp(inputList):
 
         # 연속
         result[i].append( result[i-1][0] + inputList[i] )
+
     lastIdx = totalStairs - 1
     return result[lastIdx][0] if result[lastIdx][0] > result[lastIdx][1] else result[lastIdx][1]
+
+##############
 
 totalStairs = input()
 inputList = []
