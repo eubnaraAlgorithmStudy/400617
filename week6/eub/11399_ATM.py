@@ -6,7 +6,7 @@ def series(len, inputList):
         sumList.append(sumList[i-1] + inputList[i])
         result += sumList[i]
     return result
-
+    
 leng = input()
 inputStr = raw_input()
 inputList = inputStr.split()
