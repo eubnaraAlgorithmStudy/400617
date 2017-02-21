@@ -68,15 +68,16 @@ int dp(int numOfIncidents) {
             parent[j][i][1] = i-1;
         }
 
+
+        // 바로 전 사건은 cop1가 처리한 경우
+
         //TODO: incidnet[w+1] 에 값을 저장해놨기 때문에 일관적이지 않은 문제... 리팩토링이 필요하다.
-        if(cache[i-1][i][alt] > cache[i-1][0][alt^1] + distance(incident[w+1], incident[i])) {
-          cache[i-1][i][alt] = cache[i-1][0][alt^1] + distance(incident[w+1], incident[i]);
+        if(cache[i-1][i][alt] > cache[i-1][0][alt ^ 1] + distance(incident[w+1], incident[i])) {
+          cache[i-1][i][alt] = cache[i-1][0][alt ^ 1] + distance(incident[w+1], incident[i]);
           parent[i-1][i][0] = i-1;
           parent[i-1][i][1] = 0;
         }
 
-
-        // 바로 전 사건은 cop1가 처리한 경우
         for(int j = 1; j < i-1; j++) {
             if (cache[i-1][i][alt] > cache[i-1][j][alt ^ 1] + distance(incident[j], incident[i])) {
                 cache[i-1][i][alt] = cache[i-1][j][alt ^ 1] + distance(incident[j], incident[i]);
@@ -93,16 +94,22 @@ int dp(int numOfIncidents) {
 void printOrder(int endCop1, int endCop2) {
   // 순서를 앞에서부터 찾아야하므로, stack에 넣고 다시 빼는 형식을 이용하자.
   vector<int> order;
-
-  for(int i = w; i >= 1; i--) {
-      //현재 i 가 가리키는 위치가 앞의 인덱스인지 뒤 인덱스인지에 따라서, 어느 경찰차에서 온지 알 수 있다.
-      if(endCop1 == i) {
+  int curEndCop1, curEndCop2;
+  int i = w;  // i 에 32765? 이상한 값이 들어가는 현상
+  for(i = w; i >= 1; i--) {
+      curEndCop1 = endCop1;
+      curEndCop2 = endCop2;
+      //현재 i 가  가리키는 위치가 앞의 인덱스인지 뒤 인덱스인지에 따라서, 어느 경찰차에서 온지 알 수 있다.
+      if(curEndCop1 == i) {
         order.push_back(1);
       } else {
         order.push_back(2);
       }
-      endCop1 = parent[endCop1][endCop2][0];
-      endCop2 = parent[endCop1][endCop2][1];
+      // 오류.. endCop1의 값이 변하므로 잘못 되었다.
+      // endCop1 = parent[endCop1][endCop2][0];
+      // endCop2 = parent[endCop1][endCop2][1];
+      endCop1 = parent[curEndCop1][curEndCop2][0];
+      endCop2 = parent[curEndCop1][curEndCop2][1];
   }
   for(int i = w; i >= 1; i--) {
     printf("%d\n", order.back());
