@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cstring>
 
 using namespace std;
 
@@ -25,19 +26,19 @@ int distance(int* a, int* b) {
     return diff;
 }
 
-void dp(int numOfIncidents) {
+int dp(int numOfIncidents) {
     // base case
     cache[1][0][alt] = distance(incident[1], incident[0]);
     cache[0][1][alt] = distance(incident[1], incident[w+1]);
 
-    parent[1][0][alt] = parent[1][0][alt] =  1;
-    parent[0][1][alt] = parent[0][1][alt] =  n;
-
+    // parent[1][0][0] = parent[1][0][1] =  1;
+    // parent[0][1][alt] = parent[0][1][alt] =  n;
+    alt ^= 1;
     for(int i = 2; i <= numOfIncidents; i++) {
         // cop1이 현재 사건으로 가는 경우
-        for(int j = 0; j < i; j++) {
-            cache[i][j][alt] = 987654321; // 초기화
-        }
+        // for(int j = 0; j < i; j++) {
+        //     cache[i][j][alt] = 987654321; // 초기화
+        // }
         // 바로 전 사건도 cop1이 처리한 경우
         for(int j = 0; j < i-1; j++) {
             cache[i][j][alt] = cache[i-1][j][alt ^ 1] + distance(incident[i-1], incident[i]);
@@ -56,9 +57,9 @@ void dp(int numOfIncidents) {
         }
 
         // cop2이 현재 사건으로 가는 경우
-        for(int j = 0; j < i; j++) {
-            cache[j][i][i] = 987654321; // 초기화
-        }
+        // for(int j = 0; j < i; j++) {
+        //     cache[j][i][alt] = 987654321; // 초기
+        // }
         // 바로 전 사건도 cop2이 처리한 경우
         for(int j = 0; j < i-1; j++) {
             cache[j][i][alt] = cache[j][i-1][alt ^ 1] + distance(incident[i-1], incident[i]);
@@ -67,8 +68,16 @@ void dp(int numOfIncidents) {
             parent[j][i][1] = i-1;
         }
 
+        //TODO: incidnet[w+1] 에 값을 저장해놨기 때문에 일관적이지 않은 문제... 리팩토링이 필요하다.
+        if(cache[i-1][i][alt] > cache[i-1][0][alt^1] + distance(incident[w+1], incident[i])) {
+          cache[i-1][i][alt] = cache[i-1][0][alt^1] + distance(incident[w+1], incident[i]);
+          parent[i-1][i][0] = i-1;
+          parent[i-1][i][1] = 0;
+        }
+
+
         // 바로 전 사건은 cop1가 처리한 경우
-        for(int j = 0; j < i-1; j++) {
+        for(int j = 1; j < i-1; j++) {
             if (cache[i-1][i][alt] > cache[i-1][j][alt ^ 1] + distance(incident[j], incident[i])) {
                 cache[i-1][i][alt] = cache[i-1][j][alt ^ 1] + distance(incident[j], incident[i]);
                 parent[i-1][i][0] = i-1;
@@ -77,6 +86,7 @@ void dp(int numOfIncidents) {
         }
         alt ^= 1;
     }
+    return alt ^ 1;
 }
 
 
@@ -101,8 +111,9 @@ void printOrder(int endCop1, int endCop2) {
 }
 
 int main(void) {
-    int curMin = 987654321;
+    int curMin = 2147483647;
     int endCop1, endCop2;
+    int alt;
     scanf("%d",&n);
     scanf("%d",&w);
 
@@ -115,37 +126,35 @@ int main(void) {
     incident[0][0] = incident[0][1] = 1;
     incident[w+1][0] = incident[w+1][1] = n;
 
+    memset(cache, 127, 1002*1002*2); //적당한 최대값
 
-    dp(w);
+    // printf("%d\n", cache[0][0][0]);
+    // return 0;
+
+    alt = dp(w);
 
     for(int i = 0; i < w; i++) {
-        for(int j = 0; j < 2; j++) {
-            int tmpEndCop1, tmpEndCop2;
-            int min;
-            if(cache[i][w][j] < cache[w][i][j]) {
-              min = cache[i][w][j];
-              tmpEndCop1 = i;
-              tmpEndCop2 = w;
-            } else {
-              min = cache[w][i][j];
-              tmpEndCop1 = w;
-              tmpEndCop2 = i;
-            }
-            //int min = cache[i][w][w] < cache[w][i][w] ? cache[i][w][w] : cache[w][i][w];
-            //curMin = curMin < min ? curMin : min;
-            if( min < curMin) {
-              curMin = min;
-              endCop1 = tmpEndCop1;
-              endCop2 = tmpEndCop2;
-            }
+        int tmpEndCop1, tmpEndCop2;
+        int min;
+        if(cache[i][w][alt] < cache[w][i][alt]) {
+          min = cache[i][w][alt];
+          tmpEndCop1 = i;
+          tmpEndCop2 = w;
+        } else {
+          min = cache[w][i][alt];
+          tmpEndCop1 = w;
+          tmpEndCop2 = i;
+        }
+        //int min = cache[i][w][w] < cache[w][i][w] ? cache[i][w][w] : cache[w][i][w];
+        //curMin = curMin < min ? curMin : min;
+        if( min < curMin) {
+          curMin = min;
+          endCop1 = tmpEndCop1;
+          endCop2 = tmpEndCop2;
         }
     }
     printf("%d\n",curMin);
     printOrder(endCop1,endCop2);
-    //TODO: cache를 987654321로 초기화 해야한다? 느리지 않을까?
-
-
-
 
     return 0;
 }
