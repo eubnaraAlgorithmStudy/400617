@@ -17,6 +17,7 @@ void dp() {
   incident[0][0] = incident[0][1] = 1;
   cache[1][0] = dist(0, 1);
 
+
   incident[0][0] = incident[0][1] = n;
   cache[0][1] = dist(0, 1);
 
@@ -28,7 +29,7 @@ void dp() {
       p[i][j][1] = j;
     }
     incident[0][0] = incident[0][1] = 1;
-    for(int j=0; j<= i-2; j++) {
+    for(int j=0; j <= i - 2; j++) {
       if(cache[i][i-1] > cache[j][i-1] + dist(i, j)) {
         cache[i][i-1] = cache[j][i-1] + dist(i, j);
         p[i][i-1][0] = j;
@@ -43,7 +44,7 @@ void dp() {
       p[j][i][1] = i-1;
     }
     incident[0][0] = incident[0][1] = n;
-    for(int j=0; j<= i-2; j++) {
+    for(int j=0; j <= i - 2; j++) {
       if(cache[i-1][i] > cache[i-1][j] + dist(i, j)) {
         cache[i-1][i] = cache[i-1][j] + dist(i, j);
         p[i-1][i][0] = i-1;
@@ -59,14 +60,22 @@ int max(int x, int y) {
   return x < y ? y : x;
 }
 
+
+//TODO: printOrder(0, 0)이 되는 경우가 에러인데, 이런 경우가 왜 생기지..?
+// 원인은 memset() 에 있었다. main() 함수 내에 memset()호출 근처 주석 참고
+
 void printOrder(int x, int y) {
+  // if(x == 0 && y == 0) {
+  //   return;
+  // }
+
   // basecase
-  if(max(x,y) == 1) {
+  if(1 == max(x, y)) {
     if(x > y) {
-      printf("%d\n",1);
+      printf("%d\n", 1);
     }
     else {
-      printf("%d\n",2);
+      printf("%d\n", 2);
     }
     return;
   }
@@ -83,9 +92,13 @@ void printOrder(int x, int y) {
 
 
 int main(void) {
-  int minCost = 987654321;
+  int minCost = 2147483647;
   int lastX, lastY;
-  memset(cache, 127, 1001 * 1001);
+  
+  //error
+  // memset(cache, 127, (1001 * 1001);
+
+  memset(cache, 127, (1001 * 1001) * sizeof(int));
 
   scanf("%d", &n);
   scanf("%d", &w);
