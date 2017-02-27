@@ -8,11 +8,6 @@ using namespace std;
 int c;
 int m;
 int len;
-
-int cmpFunc (const void *a, const void *b) {
-  return (*(int*)a - *(int*)b);
-}
-
 const int MOD = 1000000007;
 string e;
 string digit;
