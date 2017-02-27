@@ -11,7 +11,6 @@ long long eVal;
 char e[15];
 int sortedE[15];
 int len;
-
 // 초기화 필요
 int taken;
 
