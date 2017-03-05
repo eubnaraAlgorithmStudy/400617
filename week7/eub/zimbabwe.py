@@ -76,17 +76,47 @@ def solve(strLen, taken, remainder, less):
         if(taken & choose != 0):
             continue
 
+
+
+        if(less == False and e[strLen] < sorted_e[i]):
+            continue
+        if(0 < i and sorted_e[i-1] == sorted_e[i] and (taken & (1 << i-1) == 0) ):
+            continue
+        cache[taken][remainder][less] += solve(strLen+1, taken | choose, (remainder * 10 + int(sorted_e[i]) ) % m, less or sorted_e[i] < e[strLen])
+        cache[taken][remainder][less] %= 1000000007
+
+        '''
+        아래 코드의 오류는 solve( , , , True) 인 경우를 2번 호출할 수 있다는 점이다. 경우의 수를 잘못 계산했다...ㅜ_ㅜ
+        제약조건(중복제거, 크기가 작아야함, 이미 있는 수를 자리만 바꿔야함)을 제외하고는 다음의 두 경우만 따져야 하는데, 중복해서 더해준 점이 실수였다.
+         - cache[taken][remainder][less] =
+          * solve(strLen+1, taken | choose, (remainder * 10 + int(sorted_e[i]) ) % m, True)
+          * solve(strLen+1, taken | choose, (remainder * 10 + int(sorted_e[i]) ) % m, False)
+
+        현재까지의 숫자들의 비교에서 less 에 따라서, solve()의 두가지 길 중 하나만 선택해서 가는 셈이다. 두 가지 값을 모두 더하는 건 아니다. 그냥 단지 이미 구해놓은 값을 이용하는 것 뿐이다. 두 가지의 경우는 다르다고 여겨지기 때문에 값을 따로 저장하는 것 뿐이다. 만일, 현재 계란 값보다 작다 라는 조건이 없다면, True, False 를 나눌 필요가 없는 것이다.
+
+        - dynamic programming을 다시 한 번 생각해보자.
+         * 미리 저장해둔 값을 이용하자. (중복된 계산을 하지말자.)라는 취지이다.
+         * 그런데 이 문제에서, 이미 고른 숫자는 2번 고를 수 없기 때문에, 다른 경우를 다르게 구해서 저장하는 것이고(taken)
+         * 나머지가 현재까지 몇인지에 따라 다른 경우니까 다르게 구해서 저장하는 것이고(remainder)
+         * 그 전의 값들에서 작다 안작다 라는 경우를 나눌 수 있으니까 다르게 구해서 저장하는 것이다.(less)
+         * 즉, 재활용하기 위해선 정확하게 같은 경우일 때만 재활용 할 수 있다. 다른 경우를 구해놓은 값을 이용하는 건 상식적으로 말이 안되겠지.
+
+        점화식을 생각하며, 현재 값은 어느 값들의 합인가를 우선 생각해보자. 무턱대고 경우의 수를 나누지 말고..
+        '''
+        '''
         if(less == True):
             cache[taken][remainder][less] += solve(strLen+1, taken | choose, (remainder * 10 + int(sorted_e[i]) ) % m, True)
         # int형으로 안바꿔도 비교가 된다.
         elif( sorted_e[i] <= e[strLen]):
-            if(0 < i and sorted_e[i-1] == sorted_e[i] and (taken & (choose >> 1) == 0) ):
+            if(0 < i and sorted_e[i-1] == sorted_e[i] and (taken & (1 << i-1) == 0) ):
                 continue
             cache[taken][remainder][less] += solve(strLen+1, taken | choose, (remainder * 10 + int(sorted_e[i]) ) % m, sorted_e[i] < e[strLen])
-
-        cache[taken][remainder][less] %= 1000000007
+        '''
 
     return cache[taken][remainder][less]
+
+
+
 
 
 
@@ -135,6 +165,7 @@ def main():
 
 
         sorted_e = ''.join(sorted(e))
+        #print e, m, sorted_e
         #print sorted_e
         print solve(0, 0, 0, False)
 
