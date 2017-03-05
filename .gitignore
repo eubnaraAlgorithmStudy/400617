@@ -2,4 +2,4 @@
 *.DSYM
 *.DS_Store
 *.dSYM
-test*
+*.test
