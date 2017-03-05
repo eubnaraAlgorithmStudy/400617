@@ -1,13 +1,16 @@
 #include <cstring>
 #include <iostream>
 
+const int K_MAX = 100000000;
+
+
 using namespace std;
 
 int c, n, m, k;
-double cache[101][101];
+int cache[101][101];
 
-double prepCal(int a, int b) {
-  double &ret = cache[a][b];
+int prepCal(int a, int b) {
+  int &ret = cache[a][b];
   if (ret != -1)
     return ret;
 
@@ -25,6 +28,7 @@ double prepCal(int a, int b) {
     ret += prepCal(a - 1, b);
     ret += prepCal(a, b - 1);
   }
+  ret %= K_MAX;
 
   return ret;
 }
@@ -36,7 +40,7 @@ void printKthWord(int k) {
   }
   int a = n;
   int b = m;
-  printf("a, b = %d %d\n", a, b);
+  //printf("a, b = %d %d\n", a, b);
   while (a != 0 && b != 0) {
     if (cache[a - 1][b] >= k) {
       printf("a");
@@ -68,7 +72,7 @@ int main(void) {
 
   for (int i = 0; i < c; i++) {
     scanf("%d %d %d", &n, &m, &k);
-    memset(cache, -1, sizeof(double) * 101 * 101);
+    memset(cache, -1, sizeof(int) * 101 * 101);
     printKthWord(k);
   }
 
