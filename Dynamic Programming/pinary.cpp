@@ -11,18 +11,21 @@ using namespace std;
 
 
 */
-long long int ans[90][2];
+long long int ans[2][2];
 int main(void) {
+  bool toggle = false;
   long long int n;
   scanf("%lld", &n);
-  ans[0][0] = 0;
-  ans[0][1] = 1;
+  ans[toggle][0] = 0;
+  ans[toggle][1] = 1;
 
   for (int i=1; i<n; i++) {
-    ans[i][0] = ans[i-1][0] + ans[i-1][1];
-    ans[i][1] = ans[i-1][0];
+    toggle = !toggle;
+    ans[toggle][0] = ans[!toggle][0] + ans[!toggle][1];
+    ans[toggle][1] = ans[!toggle][0];
+
   }
-  printf("%lld", ans[n-1][0] + ans[n-1][1]);
+  printf("%lld", ans[toggle][0] + ans[toggle][1]);
 
   return 0;
 }
