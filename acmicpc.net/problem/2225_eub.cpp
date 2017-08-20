@@ -10,13 +10,8 @@ const int divider = 1000000000;
 int dfs(int n, int k) {
   int sum = 0;
   if (k == 1) {
-    if (n <= N) {
       cache[n][k] = 1;
       return 1;
-    } else {
-      cache[n][k] = 0;
-      return 0;
-    }
   } else {
     for(int i=0;i<=n;i++) {
         if (cache[n-i][k-1] != -1) {
