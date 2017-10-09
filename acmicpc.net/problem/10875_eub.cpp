@@ -1,23 +1,24 @@
 #include <iostream>
+#include <cstdlib>
 #include <cstdio>
-#include <cmath>
-
+#include <algorithm>
+using namespace std;
 
 typedef struct _coord {
-  int x;
-  int y;
+  long long x;
+  long long y;
 } COORD;
 
 
 int L, N;
-int moveInfo[1000+1][2];
+long long moveInfo[1000+1][2];
 COORD curPos;
 COORD point[1000+1]; // 직선이 끝나는 점을 저장한다. (0, 0) 에서 시작
 COORD endPoint;
 int curDir;
 
-unsigned long long curTime;
-int limit;
+long long curTime;
+long long limit;
 
 
 enum DIR {NORTH, EAST, SOUTH, WEST};
@@ -39,10 +40,10 @@ const COORD dir[4] = {
     * 4: | |
 
 */
-bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
+bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, long long type) {
   // printf("a0(%d, %d), a1(%d, %d)\n", a0.x, a0.y, a1.x, a1.y);
   // printf("b0(%d, %d), b1(%d, %d)\n", b0.x, b0.y, b1.x, b1.y);
-  int up, down, left, right;
+  long long up, down, left, right;
   switch(type) {
     case 1:
       if ( a0.y == b0.y) {
@@ -53,10 +54,15 @@ bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
           left = b1.x;
           right = b0.x;
         }
-        if (a0.x < left) {
+        /*
+          ERR: case 1, 4 부분에서 버그 있었음
+        */
+        if (a0.x < left && left <= a1.x) {
           endPoint.x = left;
-        } else {
+        } else if (right < a0.x && a1.x <= right){
           endPoint.x = right;
+        } else {
+          break;
         }
         endPoint.y = a0.y;
         return true;
@@ -119,10 +125,12 @@ bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
           down = b1.y;
           up = b0.y;
         }
-        if (a0.y < down) {
+        if (a0.y < down && down <= a1.y) {
           endPoint.y = down;
-        } else {
+        } else if (up < a0.y && a1.y <= up){
           endPoint.y = up;
+        } else {
+          break;
         }
         endPoint.x = a0.x;
         return true;
@@ -137,6 +145,8 @@ bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
 
 void move() {
   // N 번째는 현재 방향대로 그대로 직진할 경우를 뜻함.
+  bool crossed = false;
+  long long crossedDist = 2147483647;
   for(int i=0; i<=N; i++) {
     // printf("(x, y): (%d, %d)\n", curPos.x, curPos.y);
     COORD newPos;
@@ -169,11 +179,17 @@ void move() {
       }
       if (isCrossed(point[i],point[i+1],point[j],point[j+1], type)) {
         // printf("type: %d\n", type);
-        // printf("crossed when (%d, %d)\n", endPoint.x, endPoint.y);
-        int tmp = moveInfo[i][0] - abs(newPos.x - endPoint.x + newPos.y - endPoint.y);
-        curTime += tmp;
-        return;
+        // printf("crossed when (%lld, %lld)\n", endPoint.x, endPoint.y);
+        long long tmp = moveInfo[i][0] - abs(newPos.x - endPoint.x + newPos.y - endPoint.y);
+        crossedDist = min(crossedDist, tmp);
+        crossed = true;
+        // curTime += tmp;
+        // return;
       }
+    }
+    if(crossed) {
+      curTime += crossedDist;
+      return;
     }
 
     // 장외
@@ -216,7 +232,7 @@ int main(void) {
   scanf("%d", &N);
   for(int i=0;i<N;i++) {
     char dir;
-    scanf("%d %c", &moveInfo[i][0], &dir);
+    scanf("%llu %c", &moveInfo[i][0], &dir);
     // 0 1 2 3 : 북 동 남 서
     if(dir == 'L') {
       // trick 3을 더하고 % 4 연산을 할 예정
