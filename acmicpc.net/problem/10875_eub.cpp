@@ -16,7 +16,7 @@ COORD point[1000+1]; // 직선이 끝나는 점을 저장한다. (0, 0) 에서 �
 COORD endPoint;
 int curDir;
 
-int curTime;
+unsigned long long curTime;
 int limit;
 
 
@@ -40,6 +40,8 @@ const COORD dir[4] = {
 
 */
 bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
+  // printf("a0(%d, %d), a1(%d, %d)\n", a0.x, a0.y, a1.x, a1.y);
+  // printf("b0(%d, %d), b1(%d, %d)\n", b0.x, b0.y, b1.x, b1.y);
   int up, down, left, right;
   switch(type) {
     case 1:
@@ -75,8 +77,8 @@ bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
         down = b1.y;
         up = b0.y;
       }
-      if (left <= b0.x || b0.x <= right) {
-          if (down <= a0.y || a0.y <= up) {
+      if (left <= b0.x && b0.x <= right) {
+          if (down <= a0.y && a0.y <= up) {
             endPoint.y = a0.y;
             endPoint.x = b0.x;
             return true;
@@ -99,8 +101,8 @@ bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
         down = a1.y;
         up = a0.y;
       }
-      if (left <= a0.x || a0.x <= right) {
-          if (down <= b0.y || b0.y <= up) {
+      if (left <= a0.x && a0.x <= right) {
+          if (down <= b0.y && b0.y <= up) {
             endPoint.y = b0.y;
             endPoint.x = a0.x;
             return true;
@@ -134,40 +136,16 @@ bool isCrossed(COORD a0, COORD a1, COORD b0, COORD b1, int type) {
 
 
 void move() {
-  for(int i=0; i<N; i++) {
+  // N 번째는 현재 방향대로 그대로 직진할 경우를 뜻함.
+  for(int i=0; i<=N; i++) {
     // printf("(x, y): (%d, %d)\n", curPos.x, curPos.y);
-    // 장외
-    switch(curDir) {
-      case NORTH:
-        if(curPos.y + moveInfo[i][0] > limit) {
-          curTime += (limit - curPos.y + 1);
-          return;
-        }
-        break;
-      case EAST:
-        if(curPos.x + moveInfo[i][0] > limit) {
-          curTime += (limit - curPos.x + 1);
-          return;
-        }
-        break;
-      case SOUTH:
-        if(curPos.y - moveInfo[i][0] < -limit) {
-          curTime += (limit + curPos.y + 1);
-          return;
-        }
-        break;
-      case WEST:
-        if(curPos.x - moveInfo[i][0] < -limit) {
-          curTime += (limit + curPos.x + 1);
-          return;
-        }
-        break;
-    }
-    curPos.x = curPos.x + dir[curDir].x * moveInfo[i][0];
-    curPos.y = curPos.y + dir[curDir].y * moveInfo[i][0];
+    COORD newPos;
 
-    point[i+1].x = curPos.x;
-    point[i+1].y = curPos.y;
+    newPos.x = curPos.x + dir[curDir].x * moveInfo[i][0];
+    newPos.y = curPos.y + dir[curDir].y * moveInfo[i][0];
+
+    point[i+1].x = newPos.x;
+    point[i+1].y = newPos.y;
 
     // 장외가 아니라면, 직선을 만들고, 해당 직선과 지금까지 만들어진 직선과 crossed 인지 확인
     for(int j=0; j<i-1; j++) {
@@ -176,13 +154,13 @@ void move() {
       if(j % 2 == 0) {
         type = 1;
       } else {
-        type = 3;
+        type = 2;
       }
       switch(curDir) {
         // 세로 직선
         case NORTH:
         case SOUTH:
-          type += 1;
+          type += 2;
           break;
         // 가로 직선
         case EAST:
@@ -190,14 +168,46 @@ void move() {
           break;
       }
       if (isCrossed(point[i],point[i+1],point[j],point[j+1], type)) {
+        // printf("type: %d\n", type);
         // printf("crossed when (%d, %d)\n", endPoint.x, endPoint.y);
-        int tmp = moveInfo[i][0] - abs(curPos.x - endPoint.x + curPos.y - endPoint.y);
-        curTime += tmp + 1;
+        int tmp = moveInfo[i][0] - abs(newPos.x - endPoint.x + newPos.y - endPoint.y);
+        curTime += tmp;
         return;
       }
     }
+
+    // 장외
+    switch(curDir) {
+      case NORTH:
+        if(newPos.y > limit) {
+          curTime += (limit - curPos.y + 1);
+          return;
+        }
+        break;
+      case EAST:
+        if(newPos.x > limit) {
+          curTime += (limit - curPos.x + 1);
+          return;
+        }
+        break;
+      case SOUTH:
+        if(newPos.y < -limit) {
+          curTime += (limit + curPos.y + 1);
+          return;
+        }
+        break;
+      case WEST:
+        if(newPos.x < -limit) {
+          curTime += (limit + curPos.x + 1);
+          return;
+        }
+        break;
+    }
+
     curTime += moveInfo[i][0];
     curDir = (curDir + moveInfo[i][1]) % 4;
+    curPos.x = newPos.x;
+    curPos.y = newPos.y;
   }
 }
 
@@ -215,12 +225,12 @@ int main(void) {
       moveInfo[i][1] = 1;
     }
   }
-  // moveInfo[N][0] = 2 * 100000000 + 1; // 마지막은 현재 방향대로 직진
+  moveInfo[N][0] = 2 * 100000000 + 1; // 마지막은 현재 방향대로 직진
   limit = L;
   curPos.x = curPos.y = 0;
   curDir = EAST;
   move();
-  printf("%d\n", curTime);
+  printf("%lld\n", curTime);
 
   return 0;
 }
