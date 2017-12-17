@@ -177,6 +177,9 @@ void move() {
         case WEST:
           break;
       }
+      /*
+        ERR: cross 되는 모든 선분들 중에서 가장 짧은 걸 선택했어야 했음
+      */
       if (isCrossed(point[i],point[i+1],point[j],point[j+1], type)) {
         // printf("type: %d\n", type);
         // printf("crossed when (%lld, %lld)\n", endPoint.x, endPoint.y);
