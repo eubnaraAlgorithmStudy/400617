@@ -49,7 +49,13 @@ int main(void) {
     for(int i = 0; i < E; i++) {
         int from, to, w;
         scanf("%d %d %d", &from, &to, &w);
-        edge[from].push_back(EDGE(to, w));
+        if (start == from && w < dist[to]) {
+            dist[to] = w;
+        } else if (start == to) {
+            continue;
+        } else {
+            edge[from].push_back(EDGE(to, w));
+        }
     }
 
     dist[start] = 0;
@@ -68,9 +74,9 @@ int main(void) {
         if(INF == dist[i]) {
             printf("INF\n");
         } else {
-            printf("%d\n", dist[i]);
-            
+            printf("%d\n", dist[i]);            
         }
     }
+
     return 0;
 }
