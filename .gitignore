@@ -4,3 +4,4 @@
 *.dSYM
 *.test
 *testcase*
+.vscode
