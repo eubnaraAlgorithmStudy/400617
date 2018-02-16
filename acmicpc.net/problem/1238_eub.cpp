@@ -23,7 +23,7 @@ typedef struct Vertex {
 } VERTEX;
 
 bool operator<(const VERTEX& x, const VERTEX& y) {
-    return x.d > y.d;    
+    return x.d > y.d;
 }
 
 int dijkstra(int start, int end) {
